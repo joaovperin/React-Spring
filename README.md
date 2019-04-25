@@ -58,4 +58,4 @@
    * Simple react snnipets
    * Prettier - Code Formatter
 
-...to be continued.
+**...to be continued.**
