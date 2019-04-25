@@ -1,0 +1,35 @@
+#
+# Configurações do Spring
+#
+spring:
+    h2:
+        console: true
+# Enable Devtools
+    devtools:
+        restart:
+            enabled: true
+        livereload:
+            enabled: true
+# Spring Datasource
+    datasource:
+        initialization-mode: always
+        driver-class-name: org.h2.Driver
+        url: jdbc:h2:mem:testdb
+        username: sa
+        password:
+
+# Java Persistence Unit / Hibernate
+    jpa:
+        database: H2
+        database-platform: org.hibernate.dialect.H2Dialect
+        hibernate:
+            ddl:
+                auto: create-drop
+        generate-ddl: true
+        properties:
+            hibernate:
+                dialect: org.hibernate.dialect.H2Dialect
+                id:
+                    new_generator_mappings: false
+                format_sql: true
+                show_sql: true
