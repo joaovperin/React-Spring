@@ -34,6 +34,15 @@ class VeiculoGrid extends Component {
         this.handleButtonQuery = this.handleButtonQuery.bind(this);
         this.handleButtonUpdate = this.handleButtonUpdate.bind(this);
         this.handleButtonDelete = this.handleButtonDelete.bind(this);
+
+        // Listen for the event.
+        document.addEventListener('onSubmitForm', (e) => {
+            const {action, model} = e.target.value;
+            console.log(action);
+            console.log(model);
+            this.refreshGrid();
+        }, false);
+
     }
 
     componentDidMount () {

@@ -35,7 +35,7 @@ const RechTable = (props) => {
                     onDelete={onDelete} >
                 </RechTableBody>
             </Table>
-            <Button onClick={onCreate}>New</Button>
+            <Button style={{ backgroundColor: 'darkgray' }} onClick={onCreate}>New</Button>
         </Paper>
     );
 };
