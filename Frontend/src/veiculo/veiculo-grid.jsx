@@ -1,14 +1,8 @@
 import React, { Component } from 'react';
-import { withStyles } from '@material-ui/core/styles';
 import PropTypes from 'prop-types';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
-import Paper from '@material-ui/core/Paper';
-
-import axios from "axios";
+import { withStyles } from '@material-ui/core/styles';
+import RechTable from '../components/rech-table';
+import Http from '../core/http';
 
 const styles = theme => ({
     root: {
@@ -24,50 +18,72 @@ const styles = theme => ({
 
 class VeiculoGrid extends Component {
 
+    title = 'Veículos';
+    headers = [
+        { title: 'Código', name: 'id' },
+        { title: 'Placa', name: 'placa' },
+        { title: 'Marca', name: 'marca' },
+        { title: 'Ano', name: 'ano' },
+    ];
     state = {
-        lista: [
-            { id: 1, placa: "AVC-1234", marca: "Ford", ano: 1996 },
-            { id: 2, placa: "XVC-1674", marca: "Outro", ano: 2003 }
-        ]
+        rows: []
     }
 
-    componentDidMount() {
-        axios.get('http://localhost:8080/veiculo').then((response) => {
-            this.setState({ lista: response.data });
+    constructor (props) {
+        super(props);
+        this.handleButtonQuery = this.handleButtonQuery.bind(this);
+        this.handleButtonUpdate = this.handleButtonUpdate.bind(this);
+        this.handleButtonDelete = this.handleButtonDelete.bind(this);
+    }
+
+    componentDidMount () {
+        this.refreshGrid();
+    }
+
+    render () {
+        return (
+            <RechTable
+                title={this.title}
+                headers={this.headers}
+                rows={this.state.rows}
+                onQuery={this.handleButtonQuery}
+                onUpdate={this.handleButtonUpdate}
+                onCreate={this.handleButtonCreate}
+                onDelete={this.handleButtonDelete}
+            ></RechTable>
+        );
+    }
+
+    handleButtonUpdate = (id) => {
+        return alert('Alterando veículo ' + id);
+    }
+    handleButtonQuery = (id) => {
+        return alert('Consultando veículo ' + id);
+    }
+    handleButtonDelete = (id) => {
+        if (window.confirm('Tem certeza que deseja excluir o veículo ' + id + '?')) {
+            return Http.delete('veiculo', id).then((response) => this.refreshGrid());
+        }
+        return false;
+    }
+    handleButtonCreate = () => {
+        return Http.post('veiculo', {
+            placa: 'BAC-3213',
+            marca: 'Flintstone',
+            ano: 1996
+        }).then((response) => {
+            this.refreshGrid();
+        }).catch((error) => {
+            console.error(error);
         })
     }
 
-    render() {
-        const { classes } = this.props;
-        return (
-            <Paper className={classes.root}>
-                <Table className={classes.table}>
-                    <TableHead>
-                        <TableRow>
-                            <TableCell>Veículos</TableCell>
-                            <TableCell align="right">ID</TableCell>
-                            <TableCell align="right">Placa</TableCell>
-                            <TableCell align="right">Marca</TableCell>
-                            <TableCell align="right">Ano</TableCell>
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {this.state.lista.map(row => (
-                            <TableRow key={row.id}>
-                                <TableCell component="th" scope="row">
-                                    {row.name}
-                                </TableCell>
-                                <TableCell align="right">{row.id}</TableCell>
-                                <TableCell align="right">{row.placa}</TableCell>
-                                <TableCell align="right">{row.marca}</TableCell>
-                                <TableCell align="right">{row.ano}</TableCell>
-                            </TableRow>
-                        ))}
-                    </TableBody>
-                </Table>
-            </Paper>
-        );
+    refreshGrid = () => {
+        return Http.get('veiculo').then((response) => {
+            this.setState({ rows: response.data });
+        })
     }
+
 }
 
 VeiculoGrid.propTypes = {
